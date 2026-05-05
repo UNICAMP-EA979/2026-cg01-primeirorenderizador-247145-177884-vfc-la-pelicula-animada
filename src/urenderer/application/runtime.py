@@ -25,7 +25,7 @@ class Runtime:
         self.scene = Node("scene_root")
         self.camera = Camera()
         self.scene.add_child(self.camera)
-oieeeeee
+
     @property
     def _view_matrix(self) -> np.ndarray:
         '''
@@ -78,7 +78,7 @@ oieeeeee
                 # Crie a transformação do nó filho, concatenando com as transformações anteriores
 
                 # Create child transformation
-                child_transformation =
+                child_transformation = np.matmul(transformation, child.model_transform)
 
                 #########################################################################
 
