@@ -25,7 +25,7 @@ class Runtime:
         self.scene = Node("scene_root")
         self.camera = Camera()
         self.scene.add_child(self.camera)
-
+oieeeeee
     @property
     def _view_matrix(self) -> np.ndarray:
         '''

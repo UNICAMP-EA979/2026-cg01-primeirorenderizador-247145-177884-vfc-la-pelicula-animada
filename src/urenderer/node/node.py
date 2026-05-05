@@ -50,12 +50,17 @@ class Node:
         # Translation matrix
         T = np.eye(4)
 
+        for i in range(3):
+            S[i, i] = self.scale[i]
+            T[i, 3] = self.scale[i]
+
         # Rotation matrix
         # Dica: utilize o método Rotation.from_euler para criar a rotação
         # Observe que os ângulos de rotação estão em graus
-        R = np.eye(4)
+        R = Rotation.from_euler("XYZ", self.rotation, degrees=True).as_matrix()
 
-        final_transformation =
+
+        final_transformation = np.matmul(T, np.matmul(R, S))
 
         #########################################################################
 
