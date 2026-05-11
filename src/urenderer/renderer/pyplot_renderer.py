@@ -75,8 +75,10 @@ class PyplotRenderer(Renderer):
         # Projete o triângulo, combinando a matriz de transformação do modelo,
         #  view matriz (self._view_matrix) e a matriz de projeção (self._projection_matrix)
 
-        triangle_proj =
 
+        matriz_cmb = self._view_matrix @ self._projection_matrix @ model_transformation
+
+        triangle_proj = (matriz_cmb @ triangle.T).T
         #########################################################################
 
         return triangle_proj
@@ -102,13 +104,15 @@ class PyplotRenderer(Renderer):
         # Cheque se o triângulo está inteiramente visível
         # Cada vértice é composto por quatro valores triangle[i] = [v_x, v_y, v_z, v_w]
         # Todos os vértices do triângulo devem estar dentro do volume: -v_w <= v_x, v_y, v_z <= v_w
+        v_xyz = triangle[:, :3]
+        v_w = triangle[:, 3:]
 
         # Checa se o triângulo removido
-        clip =
+        clip = np.any(np.abs(v_xyz) > v_w)  
 
         if not clip:
             # Normalize o triângulo, dividindo cada vértice pelo seu último valor v_w
-            triangle_ndc =
+            triangle_ndc = triangle/v_w
 
             return clip, triangle_ndc
 

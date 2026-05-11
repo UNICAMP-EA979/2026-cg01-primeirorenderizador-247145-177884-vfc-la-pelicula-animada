@@ -33,9 +33,14 @@ class Camera(Node):
         '''
 
         ## SEU CÓDIGO AQUI #####################################################
-        # Crie a matriz de projeção utilizando a fórmula
         matrix = np.zeros((4, 4))
-
+        aspect_ratio = self.screen_width / self.screen_height
+        c = 1.0 / np.tan(np.radians(self.vertical_fov))
+        matrix[0, 0] = c / aspect_ratio
+        matrix[1, 1] = c
+        matrix[2, 2] = (self.far_plane + self.near_plane) / (self.near_plane - self.far_plane)
+        matrix[2, 3] = (2 * self.far_plane * self.near_plane) / (self.near_plane - self.far_plane)
+        matrix[3, 2] = -1.0
         #########################################################################
-
+        
         return matrix
