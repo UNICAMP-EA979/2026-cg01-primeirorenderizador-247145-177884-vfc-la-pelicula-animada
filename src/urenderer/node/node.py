@@ -34,57 +34,45 @@ class Node:
 
     @property
     def model_transform(self) -> np.ndarray:
-        # Create identity matrix
-        identity = np.eye(4)
+    # Convert rotation angles from degrees to radians
+        rx, ry, rz = np.radians(self.rotation)
         
-        # Scale matrix
-        scale_matrix = np.array([
-            [self.scale[0], 0, 0, 0],
-            [0, self.scale[1], 0, 0],
-            [0, 0, self.scale[2], 0],
-            [0, 0, 0, 1]
-        ])
-        
-        # Rotation matrix (from Euler angles)
-        # Convert rotation angles from degrees to radians
-        rx = np.radians(self.rotation[0])
-        ry = np.radians(self.rotation[1])
-        rz = np.radians(self.rotation[2])
-        
-        # Rotation matrices around X, Y, Z axes
-        rot_x = np.array([
+        # Build rotation matrices for each axis (using Euler angles)
+        # Rx (rotation around X)
+        Rx = np.array([
             [1, 0, 0, 0],
             [0, np.cos(rx), -np.sin(rx), 0],
             [0, np.sin(rx), np.cos(rx), 0],
             [0, 0, 0, 1]
         ])
         
-        rot_y = np.array([
+        # Ry (rotation around Y)
+        Ry = np.array([
             [np.cos(ry), 0, np.sin(ry), 0],
             [0, 1, 0, 0],
             [-np.sin(ry), 0, np.cos(ry), 0],
             [0, 0, 0, 1]
         ])
         
-        rot_z = np.array([
+        # Rz (rotation around Z)
+        Rz = np.array([
             [np.cos(rz), -np.sin(rz), 0, 0],
             [np.sin(rz), np.cos(rz), 0, 0],
             [0, 0, 1, 0],
             [0, 0, 0, 1]
         ])
         
-        rotation_matrix = rot_z @ rot_y @ rot_x
+        # Scale matrix
+        S = np.diag([self.scale[0], self.scale[1], self.scale[2], 1.0])
         
         # Translation matrix
-        translation_matrix = np.array([
-            [1, 0, 0, self.translation[0]],
-            [0, 1, 0, self.translation[1]],
-            [0, 0, 1, self.translation[2]],
-            [0, 0, 0, 1]
-        ])
+        T = np.eye(4)
+        T[:3, 3] = self.translation
         
-        # Compose transformations: T × R × S
-        return translation_matrix @ rotation_matrix @ scale_matrix
+        # Combine: T * R * S (translation applied last)
+        # Adjust the order if needed based on your expected behavior
+        rotation = Rz @ Ry @ Rx  # Combined rotation
+        return T @ rotation @ S
 
     @property
     def parent(self) -> "Node | None":
