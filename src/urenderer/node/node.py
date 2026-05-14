@@ -34,40 +34,57 @@ class Node:
 
     @property
     def model_transform(self) -> np.ndarray:
-        '''
-        The model transformation from object space to world space
-
-        Returns:
-            np.ndarray: 4x4 model transformation
-        '''
-
-        ## SEU CÓDIGO AQUI #####################################################
-        # Crie as matrizes de transformação e concatene elas
-
-        # Scale matrix
-        S = np.eye(4)
-
-        # Translation matrix
-        T = np.eye(4)
-
-        for i in range(3):
-            S[i, i] = self.scale[i]
-            T[i, 3] = self.translation[i]
-
-        # Rotation matrix
-        # Dica: utilize o método Rotation.from_euler para criar a rotação
-        # Observe que os ângulos de rotação estão em graus
-        R = Rotation.from_euler("XYZ", self.rotation, degrees=True).as_matrix()
+        # Create identity matrix
+        identity = np.eye(4)
         
-        R_full = np.eye(4)
-        R_full[:3, :3] = R
-
-
-        # Combine the transformations: first scale, then rotate, then translate
-        final_transformation = T @ R_full @ S
-        #########################################################################
-
-        return final_transformation
+        # Scale matrix
+        scale_matrix = np.array([
+            [self.scale[0], 0, 0, 0],
+            [0, self.scale[1], 0, 0],
+            [0, 0, self.scale[2], 0],
+            [0, 0, 0, 1]
+        ])
+        
+        # Rotation matrix (from Euler angles)
+        # Convert rotation angles from degrees to radians
+        rx = np.radians(self.rotation[0])
+        ry = np.radians(self.rotation[1])
+        rz = np.radians(self.rotation[2])
+        
+        # Rotation matrices around X, Y, Z axes
+        rot_x = np.array([
+            [1, 0, 0, 0],
+            [0, np.cos(rx), -np.sin(rx), 0],
+            [0, np.sin(rx), np.cos(rx), 0],
+            [0, 0, 0, 1]
+        ])
+        
+        rot_y = np.array([
+            [np.cos(ry), 0, np.sin(ry), 0],
+            [0, 1, 0, 0],
+            [-np.sin(ry), 0, np.cos(ry), 0],
+            [0, 0, 0, 1]
+        ])
+        
+        rot_z = np.array([
+            [np.cos(rz), -np.sin(rz), 0, 0],
+            [np.sin(rz), np.cos(rz), 0, 0],
+            [0, 0, 1, 0],
+            [0, 0, 0, 1]
+        ])
+        
+        rotation_matrix = rot_z @ rot_y @ rot_x
+        
+        # Translation matrix
+        translation_matrix = np.array([
+            [1, 0, 0, self.translation[0]],
+            [0, 1, 0, self.translation[1]],
+            [0, 0, 1, self.translation[2]],
+            [0, 0, 0, 1]
+        ])
+        
+        # Compose transformations: T × R × S
+        return translation_matrix @ rotation_matrix @ scale_matrix
 
     @property
     def parent(self) -> "Node | None":
