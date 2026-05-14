@@ -86,7 +86,7 @@ class Node:
         # Combine: T * R * S (translation applied last)
         # Adjust the order if needed based on your expected behavior
         rotation = Rz @ Ry @ Rx  # Combined rotation
-        return T @ R_full @ S
+        return T @ rotation @ S
 
 
     @property
