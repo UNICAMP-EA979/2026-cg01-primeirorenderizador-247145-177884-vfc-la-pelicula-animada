@@ -75,8 +75,8 @@ class PyplotRenderer(Renderer):
         # Projete o triângulo, combinando a matriz de transformação do modelo,
         #  view matriz (self._view_matrix) e a matriz de projeção (self._projection_matrix)
 
-        triangle_proj =
-
+        triangle_proj = np.matmul(np.matmul(np.matmul(self._view_matrix.T, self._projection_matrix.T), model_transformation.T), triangle.T)
+        
         #########################################################################
 
         return triangle_proj
@@ -102,13 +102,15 @@ class PyplotRenderer(Renderer):
         # Cheque se o triângulo está inteiramente visível
         # Cada vértice é composto por quatro valores triangle[i] = [v_x, v_y, v_z, v_w]
         # Todos os vértices do triângulo devem estar dentro do volume: -v_w <= v_x, v_y, v_z <= v_w
+        v_xyz = triangle[:, :3]
+        v_w = triangle[:, 3:]
 
         # Checa se o triângulo removido
-        clip =
+        clip = np.any(np.abs(v_xyz) > v_w)  
 
         if not clip:
             # Normalize o triângulo, dividindo cada vértice pelo seu último valor v_w
-            triangle_ndc =
+            triangle_ndc = triangle/v_w
 
             return clip, triangle_ndc
 
@@ -131,7 +133,9 @@ class PyplotRenderer(Renderer):
         # Mapeie o triângulo que está no intervalo [-1, 1]
         # A primeira coordenada deve ser mapeada para [0, self.screen_width]
         # A segunda coordenada deve ser mapeada para [0, self.screen_height]
-
+        triangle[:, 0] = (triangle[:, 0] + 1) / 2 * self.screen_width
+        triangle[:, 1] = (triangle[:, 1] + 1) / 2 * self.screen_height
+        triangle[:, 2] = (triangle[:, 2] + 1) / 2
         #########################################################################
 
         return triangle

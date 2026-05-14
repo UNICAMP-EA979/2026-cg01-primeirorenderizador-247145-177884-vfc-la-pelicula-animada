@@ -17,4 +17,15 @@ if __name__ == "__main__":
 
     # Crie a cena
 
+    cubo_obj1 = urenderer.node.Node()
+    cubo_obj2 = urenderer.node.Node()
+
+    cubo_obj1.render_data = urenderer.geometry.polygonal_ifs.get_ifs_cube()
+    cubo_obj1.translation = np.array([0.5, 0.25, 0.25], np.float64)
+    cubo_obj2.render_data = urenderer.geometry.polygonal_ifs.get_ifs_cube()
+    cubo_obj2.translation = np.array([0.5, 0, 0], np.float64)
+
+    runtime.scene.add_child(cubo_obj1)
+    runtime.scene.add_child(cubo_obj2)
+
     runtime.iter(capture=True)

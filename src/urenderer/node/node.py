@@ -43,23 +43,51 @@ class Node:
 
         ## SEU CÓDIGO AQUI #####################################################
         # Crie as matrizes de transformação e concatene elas
-
+    
+        R = Rotation.from_euler("XYZ", self.rotation, degrees=True).as_matrix()
+        
+        R_full = np.eye(4)
+        R_full[:3, :3] = R
+        # Convert rotation angles from degrees to radians
+        rx, ry, rz = np.radians(self.rotation)
+        
+        # Build rotation matrices for each axis (using Euler angles)
+        # Rx (rotation around X)
+        Rx = np.array([
+            [1, 0, 0, 0],
+            [0, np.cos(rx), -np.sin(rx), 0],
+            [0, np.sin(rx), np.cos(rx), 0],
+            [0, 0, 0, 1]
+        ])
+        
+        # Ry (rotation around Y)
+        Ry = np.array([
+            [np.cos(ry), 0, np.sin(ry), 0],
+            [0, 1, 0, 0],
+            [-np.sin(ry), 0, np.cos(ry), 0],
+            [0, 0, 0, 1]
+        ])
+        
+        # Rz (rotation around Z)
+        Rz = np.array([
+            [np.cos(rz), -np.sin(rz), 0, 0],
+            [np.sin(rz), np.cos(rz), 0, 0],
+            [0, 0, 1, 0],
+            [0, 0, 0, 1]
+        ])
+        
         # Scale matrix
-        S = np.eye(4)
-
+        S = np.diag([self.scale[0], self.scale[1], self.scale[2], 1.0])
+        
         # Translation matrix
         T = np.eye(4)
+        T[:3, 3] = self.translation
+        
+        # Combine: T * R * S (translation applied last)
+        # Adjust the order if needed based on your expected behavior
+        rotation = Rz @ Ry @ Rx  # Combined rotation
+        return T @ rotation @ S
 
-        # Rotation matrix
-        # Dica: utilize o método Rotation.from_euler para criar a rotação
-        # Observe que os ângulos de rotação estão em graus
-        R = np.eye(4)
-
-        final_transformation =
-
-        #########################################################################
-
-        return final_transformation
 
     @property
     def parent(self) -> "Node | None":
