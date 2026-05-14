@@ -135,7 +135,9 @@ class PyplotRenderer(Renderer):
         # Mapeie o triângulo que está no intervalo [-1, 1]
         # A primeira coordenada deve ser mapeada para [0, self.screen_width]
         # A segunda coordenada deve ser mapeada para [0, self.screen_height]
-
+        triangle[:, 0] = (triangle[:, 0] + 1) / 2 * self.screen_width
+        triangle[:, 1] = (triangle[:, 1] + 1) / 2 * self.screen_height
+        triangle[:, 2] = (triangle[:, 2] + 1) / 2
         #########################################################################
 
         return triangle
