@@ -75,7 +75,7 @@ class PyplotRenderer(Renderer):
         # Projete o triângulo, combinando a matriz de transformação do modelo,
         #  view matriz (self._view_matrix) e a matriz de projeção (self._projection_matrix)
 
-        triangle_proj = triangle @ model_transformation.T @ self._view_matrix.T @ self._projection_matrix.T
+        triangle_proj = np.matmul(np.matmul(np.matmul(self._view_matrix.T, self._projection_matrix.T), model_transformation.T), triangle.T)
         
         #########################################################################
 
