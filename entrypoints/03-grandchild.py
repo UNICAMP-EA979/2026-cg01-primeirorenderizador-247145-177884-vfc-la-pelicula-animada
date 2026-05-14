@@ -15,9 +15,15 @@ if __name__ == "__main__":
     runtime = urenderer.application.Runtime(renderer, name="03-grandchild")
 
     # Crie a cena
+    piramide_obj0 = urenderer.node.Node()
+
+    piramide_obj0.render_data = urenderer.geometry.polygonal_ifs.get_ifs_pyramid()
+    
 
     runtime.iter(capture=True)
 
     # Rotacione o nó avô
+    transform = piramide_obj0.get_component(urenderer.component.TransformComponent)
+    transform.rotation[1] = 45.0 # Rotacione 45 graus no eixo Y
 
     runtime.iter(capture=True)
