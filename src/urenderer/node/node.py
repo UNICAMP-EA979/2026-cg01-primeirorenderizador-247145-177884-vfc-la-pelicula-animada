@@ -34,7 +34,21 @@ class Node:
 
     @property
     def model_transform(self) -> np.ndarray:
-    # Convert rotation angles from degrees to radians
+        '''
+        The model transformation from object space to world space
+
+        Returns:
+            np.ndarray: 4x4 model transformation
+        '''
+
+        ## SEU CÓDIGO AQUI #####################################################
+        # Crie as matrizes de transformação e concatene elas
+    
+        R = Rotation.from_euler("XYZ", self.rotation, degrees=True).as_matrix()
+        
+        R_full = np.eye(4)
+        R_full[:3, :3] = R
+        # Convert rotation angles from degrees to radians
         rx, ry, rz = np.radians(self.rotation)
         
         # Build rotation matrices for each axis (using Euler angles)
@@ -72,7 +86,8 @@ class Node:
         # Combine: T * R * S (translation applied last)
         # Adjust the order if needed based on your expected behavior
         rotation = Rz @ Ry @ Rx  # Combined rotation
-        return T @ rotation @ S
+        return T @ R_full @ S
+
 
     @property
     def parent(self) -> "Node | None":
