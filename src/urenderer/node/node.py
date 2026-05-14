@@ -49,10 +49,10 @@ class Node:
 
         # Translation matrix
         T = np.eye(4)
-
+        
         for i in range(3):
             S[i, i] = self.scale[i]
-            T[i, 3] = self.scale[i]
+            T[i, 3] = self.translation[i]
 
         # Rotation matrix
         # Dica: utilize o método Rotation.from_euler para criar a rotação
